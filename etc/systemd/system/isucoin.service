@@ -2,14 +2,10 @@
 Description = isucoin application
 
 [Service]
-LimitNOFILE=102400
-LimitNPROC=102400
-
-WorkingDirectory=/home/isucon/isucon2018-final/webapp
-
-ExecStartPre = /usr/local/bin/docker-compose -f docker-compose.yml -f docker-compose.go.yml build
-ExecStart = /usr/local/bin/docker-compose -f docker-compose.yml -f docker-compose.go.yml up
-ExecStop = /usr/local/bin/docker-compose -f docker-compose.yml -f docker-compose.go.yml down
+WorkingDirectory=/home/isucon/isucon2018-final/webapp/python
+EnvironmentFile=/home/isucon/env.sh
+ExecStartPre = /home/isucon/local/python/bin/pipenv sync 
+ExecStart = /home/isucon/local/python/bin/pipenv run gunicorn -w5 isucoin:app -b :5000 --access-logfile=-
 
 Restart   = always
 Type      = simple
