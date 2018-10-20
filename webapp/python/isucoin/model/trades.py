@@ -65,30 +65,6 @@ def get_candlestic_data(db, mt: datetime, type: str) -> typing.List[CandlestickD
     cur.execute(f"SELECT time, first, last, high, low FROM candlestick_{type} WHERE time >= %s", (mt, ))
     return [CandlestickData(*r) for r in cur]
 
-def init_candlestick(db):
-    cur = db.cursor()
-    for type in ( 'sec', 'min', 'hour' ):
-        cur.execute(f"DELETE FROM candlestick_{type}")
-        query = f"""
-            INSERT INTO candlestick_{type} (`time`, `first`, `last`, `high`, `low`)
-            SELECT m.t, a.price, b.price, m.h, m.l
-            FROM (
-                SELECT
-                    STR_TO_DATE(DATE_FORMAT(created_at, %s), %s) AS t,
-                    MIN(id) AS min_id,
-                    MAX(id) AS max_id,
-                    MAX(price) AS h,
-                    MIN(price) AS l
-                FROM trade
-                GROUP BY t
-            ) m
-            JOIN trade a ON a.id = m.min_id
-            JOIN trade b ON b.id = m.max_id
-            ORDER BY m.t
-        """
-        tf = _get_time_format_from_candlestick_type(type)
-        cur.execute(query, (tf, "%Y-%m-%d %H:%i:%s"))
-
 
 def has_trade_chance_by_order(db, order_id: int) -> bool:
     order = orders.get_order_by_id(db, order_id)
