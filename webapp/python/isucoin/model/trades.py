@@ -48,7 +48,7 @@ def get_trade_by_id(db, id: int) -> typing.Optional[Trade]:
 
 
 def get_latest_trade(db) -> typing.Optional[Trade]:
-    return _get_trade(db, "SELECT * FROM trade ORDER BY id DESC")
+    return _get_trade(db, "SELECT * FROM trade ORDER BY id DESC LIMIT 1")
 
 
 def get_candlestic_data(db, mt: datetime, tf: str) -> typing.List[CandlestickData]:
