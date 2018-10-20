@@ -138,7 +138,6 @@ def add_order(db, ot: str, user_id: int, amount: int, price: int) -> Order:
             bank.Check(user.bank_id, total)
         except isubank.CreditInsufficient as e:
             settings.send_log(
-                db,
                 "buy.error",
                 {"error": e.msg, "user_id": user_id, "amount": amount, "price": price},
             )
@@ -156,7 +155,6 @@ def add_order(db, ot: str, user_id: int, amount: int, price: int) -> Order:
     id = cur.lastrowid
 
     settings.send_log(
-        db,
         ot + ".order",
         {"order_id": id, "user_id": user_id, "amount": amount, "price": price},
     )
@@ -182,7 +180,6 @@ def cancel_order(db, order: Order, reason: str):
     cur = db.cursor()
     cur.execute("UPDATE orders SET closed_at = NOW(6) WHERE id = %s", (order.id,))
     settings.send_log(
-        db,
         order.type + ".delete",
         {"order_id": order.id, "user_id": order.user_id, "reason": reason},
     )

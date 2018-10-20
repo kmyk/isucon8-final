@@ -87,7 +87,7 @@ def signup(db, name: str, bank_id: str, password: str):
     user_id = cur.lastrowid
 
     settings.send_log(
-        db, "signup", {"bank_id": bank_id, "user_id": user_id, "name": name}
+        "signup", {"bank_id": bank_id, "user_id": user_id, "name": name}
     )
 
 
@@ -102,5 +102,5 @@ def login(db, bank_id: str, password: str) -> User:
     if not bcrypt.checkpw(password.encode(), user.password):
         raise UserNotFound
 
-    settings.send_log(db, "signin", {"user_id": user.id})
+    settings.send_log("signin", {"user_id": user.id})
     return user

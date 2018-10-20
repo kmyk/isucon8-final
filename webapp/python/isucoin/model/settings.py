@@ -22,9 +22,6 @@ def set_setting(db, k: str, v: str):
     if k in ( BANK_ENDPOINT, BANK_APPID ):
         if _isubank is not None:
             _isubank = None
-    if k in ( LOG_ENDPOINT, LOG_APPID ):
-        if _logger is not None:
-            _logger = None
 
 
 def get_setting(db, k: str) -> str:
@@ -42,15 +39,13 @@ def get_isubank(db):
     return _isubank
 
 
-def get_logger(db):
+def get_logger():
     global _logger
     if _logger is None:
-        endpoint = get_setting(db, LOG_ENDPOINT)
-        appid = get_setting(db, LOG_APPID)
-        _logger = isulogger.IsuLogger(endpoint, appid)
+        _logger = isulogger.IsuLogger()
     return _logger
 
 
-def send_log(db, tag, v):
-    logger = get_logger(db)
+def send_log(tag, v):
+    logger = get_logger()
     logger.send(tag, v)
