@@ -77,19 +77,22 @@ def get_orders_by_userid(db, user_id: int) -> typing.List[Order]:
 def get_orders_by_userid_and_lasttradeid(
     db, user_id: int, trade_id: int
 ) -> typing.List[Order]:
-    c = db.cursor()
-    c.execute(
-        "SELECT * FROM orders WHERE user_id = %s AND trade_id IS NOT NULL AND trade_id > %s ORDER BY created_at ASC",
-        (user_id, trade_id),
-    )
-    orders = [Order(*r) for r in c]
-
-    # fetch_order_relation() だったものをここでやる
     user = users.get_user_by_id(db, user_id).to_json()
-    for order in orders:
+    query = """
+        SELECT *
+        FROM orders INNER JOIN trade ON orders.trade_id = trade.id
+        WHERE user_id = %s AND trade_id > %s
+        ORDER BY orders.created_at ASC
+    """
+    cur = db.cursor()
+    cur.execute(query, (user_id, trade_id))
+    orders = []
+    for row in cur:
+        row = list(row)
+        order = Order(*row[: 8])
         order.user = user
-        if order.trade_id:
-            order.trade = asdict(trades.get_trade_by_id(db, order.trade_id))
+        order.trade = asdict(trades.Trade(*row[8 :]))
+        orders.append(order)
     return orders
 
 
