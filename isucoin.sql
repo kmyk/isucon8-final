@@ -35,3 +35,30 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `bank_id` (`bank_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=13698 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `candlestick_sec` (
+  `time` datetime(6) NOT NULL,
+  `first` bigint(20) NOT NULL,
+  `last` bigint(20) NOT NULL,
+  `high` bigint(20) NOT NULL,
+  `low` bigint(20) NOT NULL,
+  PRIMARY KEY (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `candlestick_min` (
+  `time` datetime(6) NOT NULL,
+  `first` bigint(20) NOT NULL,
+  `last` bigint(20) NOT NULL,
+  `high` bigint(20) NOT NULL,
+  `low` bigint(20) NOT NULL,
+  PRIMARY KEY (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `candlestick_hour` (
+  `time` datetime(6) NOT NULL,
+  `first` bigint(20) NOT NULL,
+  `last` bigint(20) NOT NULL,
+  `high` bigint(20) NOT NULL,
+  `low` bigint(20) NOT NULL,
+  PRIMARY KEY (`time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
