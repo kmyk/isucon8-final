@@ -63,7 +63,15 @@ def get_orders_by_userid(db, user_id: int) -> typing.List[Order]:
         "SELECT * FROM orders WHERE user_id = %s AND (closed_at IS NULL OR trade_id IS NOT NULL) ORDER BY created_at ASC",
         (user_id,),
     )
-    return [Order(*r) for r in c]
+    orders = [Order(*r) for r in c]
+
+    # fetch_order_relation() だったものをここでやる
+    user = users.get_user_by_id(db, user_id).to_json()
+    for order in orders:
+        order.user = user
+        if order.trade_id:
+            order.trade = asdict(trades.get_trade_by_id(db, order.trade_id))
+    return orders
 
 
 def get_orders_by_userid_and_lasttradeid(
@@ -74,7 +82,15 @@ def get_orders_by_userid_and_lasttradeid(
         "SELECT * FROM orders WHERE user_id = %s AND trade_id IS NOT NULL AND trade_id > %s ORDER BY created_at ASC",
         (user_id, trade_id),
     )
-    return [Order(*r) for r in c]
+    orders = [Order(*r) for r in c]
+
+    # fetch_order_relation() だったものをここでやる
+    user = users.get_user_by_id(db, user_id).to_json()
+    for order in orders:
+        order.user = user
+        if order.trade_id:
+            order.trade = asdict(trades.get_trade_by_id(db, order.trade_id))
+    return orders
 
 
 def _get_one_order(db, query, *args):
@@ -118,11 +134,6 @@ def get_highest_buy_order(db) -> Order:
         "buy",
     )
 
-
-def fetch_order_relation(db, order: Order):
-    order.user = users.get_user_by_id(db, order.user_id).to_json()
-    if order.trade_id:
-        order.trade = asdict(trades.get_trade_by_id(db, order.trade_id))
 
 
 def add_order(db, ot: str, user_id: int, amount: int, price: int) -> Order:
