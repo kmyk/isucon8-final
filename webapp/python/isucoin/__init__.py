@@ -134,6 +134,7 @@ def initialize():
         for k in ("bank_endpoint", "bank_appid", "log_endpoint", "log_appid"):
             v = flask.request.form.get(k)
             model.set_setting(db, k, v)
+    time.sleep(3)
     return jsonify({})
 
 
