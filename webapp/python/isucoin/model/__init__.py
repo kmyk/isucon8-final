@@ -13,4 +13,6 @@ def init_benchmark(db):
     cur.execute("DELETE FROM orders WHERE created_at >= '2018-10-16 10:00:00'")
     cur.execute("DELETE FROM trade  WHERE created_at >= '2018-10-16 10:00:00'")
     cur.execute("DELETE FROM user   WHERE created_at >= '2018-10-16 10:00:00'")
-    init_candlestick(db)
+    cur.execute("DELETE FROM candlestick_sec  WHERE time >= '2018-10-16 10:00:00'")
+    cur.execute("DELETE FROM candlestick_min  WHERE time >= '2018-10-16 10:00:00'")
+    cur.execute("DELETE FROM candlestick_hour WHERE time >= '2018-10-16 10:00:00'")
