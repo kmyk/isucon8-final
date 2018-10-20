@@ -215,17 +215,17 @@ def info():
     from_t = base_time - datetime.timedelta(seconds=300)
     if lt and lt > from_t:
         from_t = lt.replace(microsecond=0)
-    res["chart_by_sec"] = model.get_candlestic_data(db, from_t, "%Y-%m-%d %H:%i:%s")
+    res["chart_by_sec"] = model.get_candlestic_data(db, from_t, type='sec')
 
     from_t = base_time - datetime.timedelta(minutes=300)
     if lt and lt > from_t:
         from_t = lt.replace(second=0, microsecond=0)
-    res["chart_by_min"] = model.get_candlestic_data(db, from_t, "%Y-%m-%d %H:%i:00")
+    res["chart_by_min"] = model.get_candlestic_data(db, from_t, type='min')
 
     from_t = base_time - datetime.timedelta(hours=48)
     if lt and lt > from_t:
         from_t = lt.replace(minute=0, second=0, microsecond=0)
-    res["chart_by_hour"] = model.get_candlestic_data(db, from_t, "%Y-%m-%d %H:00:00")
+    res["chart_by_hour"] = model.get_candlestic_data(db, from_t, type='hour')
 
     lowest_sell_order = model.get_lowest_sell_order(db)
     if lowest_sell_order:
