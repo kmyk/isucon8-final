@@ -2,8 +2,8 @@
 set -e
 for ip in $@ ; do
 
-    for f in webapp/python ; do
-        scp -r $f isucon@$ip:~/isucon2018-final/$f
+    for f in webapp/python/* ; do
+        scp -r $f isucon@$ip:~/isucon2018-final/webapp/python/
     done
 
     #for f in env.sh etc/nginx/nginx.conf etc/systemd/system/isucoin.service ; do
