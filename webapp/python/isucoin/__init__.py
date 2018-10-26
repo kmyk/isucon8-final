@@ -10,7 +10,6 @@ import json
 import time
 import flask
 import MySQLdb
-import random
 
 from . import model
 
@@ -234,8 +233,7 @@ def info():
         res["highest_buy_price"] = highest_buy_order.price
 
     # TODO: trueにするとシェアボタンが有効になるが、アクセスが増えてヤバイので一旦falseにしておく
-    # NOTE: ときたまtrueにしてちょうどいい量だけ負荷を増やす
-    res["enable_share"] = random.random() < 0.1
+    res["enable_share"] = True
 
     resp = jsonify(res)
     return resp
