@@ -5,7 +5,7 @@ Description = isucoin application
 WorkingDirectory=/home/isucon/isucon2018-final/webapp/python
 EnvironmentFile=/home/isucon/env.sh
 ExecStartPre = /home/isucon/local/python/bin/pipenv sync 
-ExecStart = /home/isucon/local/python/bin/pipenv run gunicorn -w5 isucoin:app -b :5000 --access-logfile=-
+ExecStart = /home/isucon/local/python/bin/pipenv run gunicorn -w5 isucoin:app --bind unix:/tmp/gunicorn.sock --access-logfile=-
 
 Restart   = always
 Type      = simple
