@@ -19,12 +19,8 @@ class IsuLogger:
         self.que = queue.Queue()
         self.thread = threading.Thread(target=self.run)
         self.thread.start()
-        with open('/home/isucon/foo', 'a') as fh:
-            fh.write('IsuLogger.__init__\n')
 
     def send(self, tag, data):
-        with open('/home/isucon/foo', 'a') as fh:
-            fh.write('IsuLogger.send\n')
         self.que.put((tag, data))
 
     def _request(self, path, data):
@@ -37,13 +33,9 @@ class IsuLogger:
 
         res = requests.post(url, data=body, headers=headers)
         res.raise_for_status()
-        with open('/home/isucon/foo', 'a') as fh:
-            fh.write('IsuLogger._request\n')
 
     def run(self):
         while True:
-            with open('/home/isucon/foo', 'a') as fh:
-                fh.write('IsuLogger.run/loop\n')
             bulk = []
             while not self.que.empty():
                 tag, data = self.que.get()
