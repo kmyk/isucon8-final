@@ -5,6 +5,8 @@ from __future__ import annotations
 
 import json
 import urllib.parse
+import threading
+import random
 
 import requests
 
@@ -24,14 +26,21 @@ class CreditInsufficient(IsubankError):
 class IsuBank:
     """ISUBANK APIクライアント"""
 
-    def __init__(self, endpoint: str, appID: str):
+    def __init__(self, load_setting):
         """
         Arguments:
-            endpoint: ISUBANK APIを利用するためのエンドポイントURI
-            appID:    ISUBANK APIを利用するためのアプリケーションID
+            load_setting: ISUBANK APIを利用するためのエンドポイントURIとアプリケーションIDを返すcallable
         """
-        self.endpoint = endpoint
-        self.appID = appID
+        self.load_setting = load_setting
+        self.endpoint, self.appID = self.load_setting()
+        self.thread = threading.Thread(target=self._run)
+        self.thread.start()
+
+    def _run(self):
+        while True:
+            self.endpoint, self.appID = self.load_setting()
+            time.sleep(7)
+
 
     def Check(self, bankID: str, price: int):
         """

@@ -12,9 +12,6 @@ BANK_APPID = "bank_appid"
 LOG_ENDPOINT = "log_endpoint"
 LOG_APPID = "log_appid"
 
-_isubank = None
-_isubank_timestamp = 0
-
 
 def set_setting(db, k: str, v: str):
     cur = db.cursor()
@@ -42,15 +39,10 @@ class SettingLoader(object):
         return (endpoint, appid)
 
 
+_isubank = isubank.IsuBank(SettingLoader(get_new_dbconn(), BANK_ENDPOINT, BANK_APPID))
+
 def get_isubank(db):
-    global _isubank, _isubank_timestamp
-    if _isubank_timestamp + 3 < time.time():
-        _isubank = None
-    if _isubank is None:
-        _isubank_timestamp = time.time()
-        endpoint = get_setting(db, BANK_ENDPOINT)
-        appid = get_setting(db, BANK_APPID)
-        _isubank = isubank.IsuBank(endpoint, appid)
+    global _isubank
     return _isubank
 
 
