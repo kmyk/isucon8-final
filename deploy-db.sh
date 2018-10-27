@@ -13,3 +13,4 @@ sudo systemctl restart mysqld
 EOF
 
 done
+echo OK
