@@ -4,6 +4,8 @@ import isubank
 import isulogger
 import time
 
+from isucoin.db import get_new_dbconn
+
 
 BANK_ENDPOINT = "bank_endpoint"
 BANK_APPID = "bank_appid"
@@ -12,8 +14,6 @@ LOG_APPID = "log_appid"
 
 _isubank = None
 _isubank_timestamp = 0
-_logger = None
-_logger_timestamp = 0
 
 
 def set_setting(db, k: str, v: str):
@@ -30,6 +30,18 @@ def get_setting(db, k: str) -> str:
     return cur.fetchone()[0]
 
 
+class SettingLoader(object):
+    def __init__(self, db, endpoint_key: str, appid_key: str):
+        self.db = db
+        self.endpoint_key = endpoint_key
+        self.appid_key = appid_key
+
+    def __call__(self):
+        endpoint = get_setting(self.db, self.endpoint_key)
+        appid = get_setting(self.db, self.appid_key)
+        return (endpoint, appid)
+
+
 def get_isubank(db):
     global _isubank, _isubank_timestamp
     if _isubank_timestamp + 3 < time.time():
@@ -42,18 +54,8 @@ def get_isubank(db):
     return _isubank
 
 
-def get_logger(db):
-    global _logger, _logger_timestamp
-    if _logger_timestamp + 3 < time.time():
-        _logger = None
-    if _logger is None:
-        _logger_timestamp = time.time()
-        endpoint = get_setting(db, LOG_ENDPOINT)
-        appid = get_setting(db, LOG_APPID)
-        _logger = isulogger.IsuLogger(endpoint, appid)
-    return _logger
-
+_logger = isulogger.IsuLogger(SettingLoader(get_new_dbconn(), LOG_ENDPOINT, LOG_APPID))
 
 def send_log(db, tag, v):
-    logger = get_logger(db)
-    logger.send(tag, v)
+    global _logger
+    _logger.send(tag, v)

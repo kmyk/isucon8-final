@@ -4,50 +4,18 @@ import os, sys
 
 sys.path.append(os.path.dirname(__file__) + "/vendor")
 
-import contextlib
 import datetime
 import json
 import time
 import flask
-import MySQLdb
 
 from . import model
+from isucoin.db import *
 
-
-# port   = os.environ.get("ISU_APP_PORT", "5000")
-dbhost = os.environ.get("ISU_DB_HOST", "127.0.0.1")
-dbport = os.environ.get("ISU_DB_PORT", "3306")
-dbuser = os.environ.get("ISU_DB_USER", "root")
-dbpass = os.environ.get("ISU_DB_PASSWORD", "")
-dbname = os.environ.get("ISU_DB_NAME", "isucoin")
-# public = os.environ.get("ISU_PUBLIC_DIR", "public")
 
 app = flask.Flask(__name__)
 app.secret_key = "tonymoris"
 
-# ISUCON用初期データの基準時間です
-# この時間以降のデータはinitializeで削除されます
-base_time = datetime.datetime(2018, 10, 16, 10, 0, 0)
-
-_dbconn = None
-
-
-def get_dbconn():
-    # NOTE: get_dbconn() is not thread safe.  Don't use threaded server.
-    global _dbconn
-
-    if _dbconn is None:
-        _dbconn = MySQLdb.connect(
-            host=dbhost,
-            port=int(dbport),
-            user=dbuser,
-            password=dbpass,
-            database=dbname,
-            charset="utf8mb4",
-            autocommit=True,
-        )
-
-    return _dbconn
 
 
 def _json_default(v):
@@ -106,18 +74,6 @@ def before_request():
 
     flask.g.current_user = user
 
-
-@contextlib.contextmanager
-def transaction():
-    conn = get_dbconn()
-    conn.begin()
-    try:
-        yield conn
-    except:
-        conn.rollback()
-        raise
-    else:
-        conn.commit()
 
 
 @app.route("/")
