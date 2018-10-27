@@ -20,9 +20,9 @@ dbport = os.environ.get("ISU_DB_PORT", "3306")
 dbuser = os.environ.get("ISU_DB_USER", "root")
 dbpass = os.environ.get("ISU_DB_PASSWORD", "")
 dbname = os.environ.get("ISU_DB_NAME", "isucoin")
-public = os.environ.get("ISU_PUBLIC_DIR", "public")
+# public = os.environ.get("ISU_PUBLIC_DIR", "public")
 
-app = flask.Flask(__name__, static_url_path="", static_folder=public)
+app = flask.Flask(__name__)
 app.secret_key = "tonymoris"
 
 # ISUCON用初期データの基準時間です
