@@ -12,3 +12,4 @@ set -e
 EOF
 
 done
+echo OK

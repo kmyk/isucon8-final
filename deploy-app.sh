@@ -12,9 +12,12 @@ for ip in $@ ; do
 
     ssh isucon@${ip} <<EOF
 set -e
+sudo mv nginx.conf /etc/nginx/
 sudo mv isucoin.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl restart isucoin.service
+sudo systemctl restart nginx.service
 EOF
 
 done
+echo OK

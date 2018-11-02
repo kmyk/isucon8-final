@@ -20,3 +20,4 @@ sudo systemctl restart nginx.service
 EOF
 
 done
+echo OK
